@@ -1,0 +1,56 @@
+networks:
+  database-network:
+    driver: bridge
+secrets:
+  database-initialize-script:
+    file: secrets/database/initialize-script.sql
+  database-password:
+    file: secrets/database/password
+services:
+  database:
+    container_name: database
+    entrypoint: >
+      sh -c "
+      /opt/mssql/bin/sqlservr &
+      until /opt/mssql-tools18/bin/sqlcmd -C -N -P $(cat $$MSSQL_SA_PASSWORD_FILE) -Q \"SELECT 1\" -S localhost,6400 -U sa; do
+        sleep 10;
+      done;
+      /opt/mssql-tools18/bin/sqlcmd -C -i /run/secrets/database-initialize-script -N -P $(cat $$MSSQL_SA_PASSWORD_FILE) -S localhost,6400 -U sa;
+      wait"
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: Express
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/database-password
+      MSSQL_TCP_PORT: 6400
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      test: /opt/mssql-tools18/bin/sqlcmd -C -N -P $(cat $$MSSQL_SA_PASSWORD_FILE) -Q "SELECT 1" -S localhost,6400 -U sa
+      timeout: 10s
+    image: mcr.microsoft.com/mssql/server:latest
+    networks:
+      - database-network
+    ports:
+      - 6400:6400
+    secrets:
+      - database-initialize-script
+      - database-password
+    volumes:
+      - database-data:/var/opt/mssql
+  server:
+    build:
+      context: .
+      target: runtime
+    container_name: server
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - database-network
+    ports:
+      - 12800:12800
+    secrets:
+      - database-password
+volumes:
+  database-data:

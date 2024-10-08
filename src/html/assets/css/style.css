@@ -1,0 +1,79 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: SofiaSansSemiCondensed;
+  src: url("/assets/fonts/SofiaSansSemiCondensed-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: SofiaSansSemiCondensed;
+  font-weight: bold;
+  src: url("/assets/fonts/SofiaSansSemiCondensed-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: SofiaSansSemiCondensed;
+  font-style: italic;
+  src: url("/assets/fonts/SofiaSansSemiCondensed-Italic.ttf") format("truetype");
+}
+
+:root {
+  --bs-body-font-family: SofiaSansSemiCondensed, sans-serif;
+  text-rendering: optimizeSpeed !important;
+}
+
+.image-button {
+  box-shadow: rgb(var(--bs-primary-rgb)) 0 0;
+  line-height: 0;
+  transition: none;
+}
+
+li {
+  align-self: center;
+}
+
+.alert {
+  margin: 0;
+}
+
+.bi {
+  fill: currentColor;
+  height: 1rem;
+  min-width: 1rem;
+  width: 1rem;
+}
+
+.container-size {
+  max-width: 32rem;
+}
+
+.navbar-brand {
+  margin-right: 0;
+}
+
+.navbar-toggler {
+  line-height: 0;
+}
+
+.pulse {
+  box-shadow: 0 0 0 max(10vh, 10vw) transparent;
+  transition: box-shadow 1s;
+}
+
+.sticky-block {
+  top: unset;
+}
+
+.stretch {
+  width: -webkit-fill-available;
+}
+
+#navbarNavDropdown {
+  flex-grow: unset;
+}
+
+@media (min-width: 992px) {
+  .sticky-block {
+    top: 0;
+  }
+}
